@@ -78,6 +78,7 @@ def get_table_detail(codz):
     SQL_QUERY = "select \n    zakaz.cod_zakaz,\n    zakaz.date_zakaz,\n    device_type.type_name,\n    ispolnitel.isp_fio,\n    zakaz.device_name,\n    zakaz.client_name,\n    zakaz.client_name,\n    zakaz.client_telefon,\n    zakaz.opisanie_zakaz,\n    zakaz.defects,\n    zakaz.price,\n    zakaz.zakaz_status,\n    status_zakaz.name,\n    zakaz.data_pay,  zakaz.COMMENT_ISP_ZAKAZ  from zakaz   inner join ispolnitel on (zakaz.ispolnitel = ispolnitel.cod_isp)\n   inner join device_type on (zakaz.tip_device = device_type.cod_type)\n   inner join status_zakaz on (zakaz.zakaz_status = status_zakaz.cod)\nwhere \n  zakaz.cod_zakaz = {}".format(codz)
     # Объект курсора
     cur = con.cursor()
+    con.begin()
     # Выполняем запрос
     cur.execute(SQL_QUERY)
     result = cur.fetchone()
@@ -222,6 +223,16 @@ def get_tip_device():
     return result
 
 
+def change_comment(s):
+    print(s[0])
+    SQL_QUERY = f"update zakaz set zakaz.comment_isp_zakaz = '{s[0]}' where zakaz.cod_zakaz = {s[1]}"
+    cur = con.cursor()
+    cur.execute(SQL_QUERY)
+    con.commit()
+
+    return print(SQL_QUERY)
+
+
 def add_comment(s):
     f = open(r'sql\add_comment.sql', 'r')
     SQL_QUERY = f.read().format(s[4],str(s[0]),s[3],s[2],s[1])
@@ -229,9 +240,9 @@ def add_comment(s):
     cur2 = con.cursor()
     cur = con.cursor()
     cur.execute(SQL_QUERY)
-    con.commit
+    con.commit()
     cur2.execute(SQL_QUERY2)
-    con.commit
+    con.commit()
 
     return print(SQL_QUERY)
 
@@ -239,8 +250,14 @@ def add_comment(s):
 def add_price(s):
     SQL_QUERY2 = "update zakaz set price = {} where cod_zakaz = {}".format(s[0], s[1])
     cur2 = con.cursor()
+
     cur2.execute(SQL_QUERY2)
-    con.commit
+
+    con.commit()
+
+def add_zakaz(zakaz):
+    return zakaz
+
 
 
 
